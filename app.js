@@ -16,6 +16,10 @@ const db = mysql.createConnection({
 const publicDirectroy = path.join(__dirname, "./public");
 app.use(express.static(publicDirectroy));
 
+// parse url encoded bodies
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+
 app.set("view engine", "hbs");
 db.connect((err) => {
   if (err) {
@@ -24,12 +28,10 @@ db.connect((err) => {
     console.log("MYSQL Connected...");
   }
 });
-app.get("/", (req, res) => {
-  res.render("index");
-});
-app.get("/register", (req, res) => {
-  res.render("register");
-});
+
+//Define Routes
+app.use("/", require("./routes/pages"));
+app.use("/auth", require("./routes/auth"));
 
 app.listen(3000, () => {
   console.log("Server started on Port 3000");
