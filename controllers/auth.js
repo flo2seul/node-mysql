@@ -1,17 +1,9 @@
-const mysql = require("mysql2");
-const jwt = require("jsonwebtoken");
+const jwt = require("../utils/jwt.util");
 const bcrypt = require("bcryptjs");
-
-const db = mysql.createConnection({
-  host: process.env.DATABASE_HOST,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  database: process.env.DATABASE,
-});
+const redisClient = require("../utils/redis.util");
+const db = require("../config/db.config");
 
 exports.register = (req, res) => {
-  console.log(req.body);
-
   const { name, email, password, passwordConfirm } = req.body;
 
   db.query(
@@ -33,7 +25,6 @@ exports.register = (req, res) => {
       }
 
       let hashedPassword = await bcrypt.hash(password, 8);
-      console.log(hashedPassword);
 
       db.query(
         "INSERT INTO user SET ?",
@@ -53,6 +44,41 @@ exports.register = (req, res) => {
           }
         }
       );
+    }
+  );
+};
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+  db.query(
+    "SELECT password FROM user WHERE email = ?",
+    [email],
+    (errors, result) => {
+      const isMatched = bcrypt.compare(password, result);
+      let info = { type: false, message: "" };
+      if (isMatched) {
+        const accessToken = jwt.sign(email);
+        const refreshToken = jwt.refresh();
+        info.message = "success";
+        redisClient.set(email, refreshToken);
+        res.setHeader("Content-Type", "application/json; charset=utf-8");
+        res.setHeader("Authorization", "Bearer " + accessToken);
+        res.setHeader("Refresh", "Bearer " + refreshToken);
+        return res.status(200).json({
+          status: 200,
+          info: info,
+          token: {
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          },
+        });
+      } else {
+        info.message = "비밀번호가 일치하지 않습니다.";
+        return res.status(200).json({
+          status: 403,
+          info: info,
+        });
+      }
     }
   );
 };
