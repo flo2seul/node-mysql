@@ -1,6 +1,5 @@
 const jwt = require("../utils/jwt.util");
 const bcrypt = require("bcryptjs");
-const redisClient = require("../utils/redis.util");
 const db = require("../config/db.config");
 
 exports.register = (req, res) => {
@@ -59,11 +58,13 @@ exports.login = async (req, res) => {
       if (isMatched) {
         const accessToken = jwt.sign(email);
         const refreshToken = jwt.refresh();
+        info.type = true;
         info.message = "success";
-        redisClient.set(email, refreshToken);
+        //redisClient.set(email, refreshToken);
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.setHeader("Authorization", "Bearer " + accessToken);
         res.setHeader("Refresh", "Bearer " + refreshToken);
+        res.cookie("access", accessToken, { httpOnly: true });
         return res.status(200).json({
           status: 200,
           info: info,
@@ -81,4 +82,10 @@ exports.login = async (req, res) => {
       }
     }
   );
+};
+exports.check = (req, res) => {
+  res.json({
+    success: true,
+    info: req.decoded,
+  });
 };
