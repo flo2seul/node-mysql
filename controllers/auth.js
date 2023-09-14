@@ -65,14 +65,16 @@ exports.login = async (req, res) => {
         res.setHeader("Authorization", "Bearer " + accessToken);
         res.setHeader("Refresh", "Bearer " + refreshToken);
         res.cookie("access", accessToken, { httpOnly: true });
-        return res.status(200).json({
-          status: 200,
-          info: info,
-          token: {
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-          },
-        });
+        return res.status(200).redirect("/");
+        // .status(200)
+        // .json({
+        //   status: 200,
+        //   info: info,
+        //   token: {
+        //     accessToken: accessToken,
+        //     refreshToken: refreshToken,
+        //   },
+        // })
       } else {
         info.message = "비밀번호가 일치하지 않습니다.";
         return res.status(200).json({
