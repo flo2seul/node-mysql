@@ -16,8 +16,12 @@
       <h4>Node MySQL</h4>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/login">Login</a></li>
-        <li><a href="/register">Register</a></li>
+        {{#if isLoggedIn}}
+          <li><a href="/auth/check">My Page</a></li>
+        {{else}}
+          <li><a href="/login">Login</a></li>
+          <li><a href="/register">Register</a></li>
+        {{/if}}
       </ul>
     </nav>
 

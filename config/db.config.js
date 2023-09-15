@@ -10,6 +10,5 @@ const dbConfig = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
 };
-const db = mysql.createConnection(dbConfig);
 
-module.exports = db;
+module.exports = dbConfig;

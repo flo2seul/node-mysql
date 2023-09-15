@@ -1,6 +1,8 @@
 const jwt = require("../utils/jwt.util");
 const bcrypt = require("bcryptjs");
-const db = require("../config/db.config");
+const mysql = require("mysql2");
+const dbConfig = require("../config/db.config");
+const db = mysql.createConnection(dbConfig);
 
 exports.register = (req, res) => {
   const { name, email, password, passwordConfirm } = req.body;
@@ -65,16 +67,8 @@ exports.login = async (req, res) => {
         res.setHeader("Authorization", "Bearer " + accessToken);
         res.setHeader("Refresh", "Bearer " + refreshToken);
         res.cookie("access", accessToken, { httpOnly: true });
+        req.session.isLoggedIn = true;
         return res.status(200).redirect("/");
-        // .status(200)
-        // .json({
-        //   status: 200,
-        //   info: info,
-        //   token: {
-        //     accessToken: accessToken,
-        //     refreshToken: refreshToken,
-        //   },
-        // })
       } else {
         info.message = "비밀번호가 일치하지 않습니다.";
         return res.status(200).json({

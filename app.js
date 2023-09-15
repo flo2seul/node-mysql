@@ -1,9 +1,14 @@
 const express = require("express");
 const path = require("path");
-
+const mysql = require("mysql2");
 const app = express();
 
-const db = require("./config/db.config");
+const session = require("express-session");
+const MySqlStore = require("express-mysql-session")(session);
+const dbConfig = require("./config/db.config");
+const db = mysql.createConnection(dbConfig);
+
+const sessionStore = new MySqlStore(dbConfig);
 
 const publicDirectroy = path.join(__dirname, "./public");
 app.use(express.static(publicDirectroy));
@@ -11,6 +16,14 @@ app.use(express.static(publicDirectroy));
 // parse url encoded bodies
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(
+  session({
+    secret: "my secret",
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.set("view engine", "hbs");
 db.connect((err) => {

@@ -7,7 +7,15 @@ const secret = process.env.JWT_SECRET;
 
 const authMiddleware = (req, res, next) => {
   // read the token from header or url
-  const token = req.headers["x-access-token"] || req.query.token;
+  const cookie = req.headers["cookie"].match(
+    new RegExp(
+      "(?:^|; )" +
+        "access".replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
+    )
+  )[1];
+
+  const token = cookie || req.query.token;
 
   // token does not exist
   if (!token) {
