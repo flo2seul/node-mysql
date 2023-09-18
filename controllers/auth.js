@@ -62,12 +62,13 @@ exports.login = async (req, res) => {
         const refreshToken = jwt.refresh();
         info.type = true;
         info.message = "success";
-        //redisClient.set(email, refreshToken);
+
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         res.setHeader("Authorization", "Bearer " + accessToken);
         res.setHeader("Refresh", "Bearer " + refreshToken);
         res.cookie("access", accessToken, { httpOnly: true });
         req.session.isLoggedIn = true;
+
         return res.status(200).redirect("/");
       } else {
         info.message = "비밀번호가 일치하지 않습니다.";
@@ -87,8 +88,9 @@ exports.check = (req, res) => {
 };
 
 exports.logout = (req, res) => {
+  //console.log(req.sessionID);
   req.session.destroy((err) => {
-    console.log(err);
+    if (err) console.log(err);
     res.redirect("/");
   });
 };
