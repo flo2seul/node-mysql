@@ -85,3 +85,10 @@ exports.check = (req, res) => {
     info: req.decoded,
   });
 };
+
+exports.logout = (req, res) => {
+  req.session.destroy((err) => {
+    console.log(err);
+    res.redirect("/");
+  });
+};

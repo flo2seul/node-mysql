@@ -16,23 +16,15 @@
       <h4>Node MySQL</h4>
       <ul>
         <li><a href="/">Home</a></li>
-        {{#if isLoggedIn}}
-          <li><a href="/mypage">My Page</a></li>
-        {{else}}
-          <li><a href="/login">Login</a></li>
-          <li><a href="/register">Register</a></li>
-        {{/if}}
+        <li><a href="/mypage">My Page</a></li>
       </ul>
     </nav>
 
     <div class="container mt-4">
-      <div class="jumbotron">
-        <h1 class="display-4">Login Project</h1>
-        <p class="lead">I'm the one who conquer this project</p>
-        <hr class="my-4" />
-        <p>simple project</p>
-        <a href="#" class="btn btn-primary btn-lg" role="button">Learn more</a>
-      </div>
+      <form action="/auth/logout" method="POST">
+
+        <button type="submit" class="btn btn-primary">Logout</button>
+      </form>
     </div>
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -44,5 +36,9 @@
       integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
       crossorigin="anonymous"
     ></script>
+    <script>
+
+      function onclick() { }
+    </script>
   </body>
 </html>

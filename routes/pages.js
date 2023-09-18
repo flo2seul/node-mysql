@@ -12,4 +12,7 @@ router.get("/register", (req, res) => {
 router.get("/login", (req, res) => {
   res.render("login");
 });
+router.get("/mypage", (req, res) => {
+  res.render("mypage");
+});
 module.exports = router;
